@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 func HelloHanlder(w http.ResponseWriter, r *http.Request) {
@@ -22,9 +24,11 @@ func main() {
 	port := 4000
 	serverHost := fmt.Sprintf("%s:%d", hostname, port)
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/v1/hello", HelloHanlder)
-	mux.HandleFunc("/v1/time", CurrentTimeHanlder)
+	mux := mux.NewRouter()
+	mux.HandleFunc("/v1/hello", HelloHanlder).
+		Methods(http.MethodGet)
+	mux.HandleFunc("/v1/time", CurrentTimeHanlder).
+		Methods(http.MethodGet)
 
 	wrappedMux := middlewares.NewLogger(mux)
 
